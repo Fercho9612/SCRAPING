@@ -1,0 +1,33 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Entornos virtuales
+.venv/
+venv/
+ENV/
+
+# Perfiles locales de Selenium / Navegador (para no subir tus datos de sesión)
+perfil_ml/
+
+# Configuraciones de editores (IntelliJ y VS Code)
+.idea/
+*.iml
+.vscode/
+
+# Caché de Python
+__pycache__/
+*.pyc
+
+# Archivos locales generados por el scraper (opcional si prefieres que no se versionen)
+*.csv
+*.png
+*.html
+Scraping/.idea
