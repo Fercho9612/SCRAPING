@@ -1,4 +1,4 @@
-name: CI Pipeline - Scraping ML (Ligero)
+name: CI Pipeline - Scraping Éxito
 
 on:
   push:
@@ -21,7 +21,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Instalar dependencias
+      # Instalar el navegador según el valor de la matriz
+
+      - name: Instalar Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: Instalar dependencias de Python
         run: |
           python -m pip install --upgrade pip
           pip install pandas selenium nltk pysentimiento
@@ -29,13 +36,14 @@ jobs:
       - name: Validar sintaxis y compilación del script
         run: python -m py_compile src/SCRAPING.py
 
-      - name: (Opcional) Ejecutar el Scraper de Mercado Libre
+      - name: (Opcional) Ejecutar el Scraper de Exito
         run: python src/SCRAPING.py
 
 #Exportan automáticamente como Artifacts en GitHub Actions.
   #Entrega diagnóstico, captura pantallas y archivos y los reportes generados
 
       - name: Guardar resultados y diagnósticos como artefactos
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: resultados-scraping-py${{ matrix.python-version }}

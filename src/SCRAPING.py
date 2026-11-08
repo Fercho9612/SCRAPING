@@ -129,6 +129,11 @@ def obtener_opciones_navegador():
     options.add_argument("--no-first-run")
     options.add_argument("--no-default-browser-check")
 
+    # Activar headless automáticamente si corre en GitHub Actions o CI
+    if os.environ.get("CI") or os.environ.get("GITHUB_ACTIONS"):
+        options.add_argument("--headless=new")
+        print("🤖 Ejecutando en modo Headless (CI/CD detectado).", flush=True)
+
     if USAR_PERFIL:
         try:
             PERFIL.mkdir(parents=True, exist_ok=True)
@@ -137,7 +142,6 @@ def obtener_opciones_navegador():
         options.add_argument(f"--user-data-dir={PERFIL}")
 
     return options
-
 
 def crear_driver():
     try:
@@ -392,7 +396,7 @@ def main():
         print(f"✅ Listo. {len(df_cat)} productos, {len(df_det)} analizados.", flush=True)
         if not df_det.empty:
             print(df_det[["producto", "sentimiento", "score", "motor"]].to_string(), flush=True)
-        print("📁 Archivos guardados en: {DATA_DIR}: catalogo_exito.csv / detalles_sentimientos_exito.csv", flush=True)
+        print(f"📁 Archivos guardados en: {DATA_DIR}: catalogo_exito.csv / detalles_sentimientos_exito.csv", flush=True)
         print("=" * 60 + "\n", flush=True)
 
     except KeyboardInterrupt:
