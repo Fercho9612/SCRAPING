@@ -32,6 +32,8 @@ jobs:
       - name: (Opcional) Ejecutar el Scraper de Mercado Libre
         run: python src/SCRAPING.py
 
+#Exportan automáticamente como Artifacts en GitHub Actions.
+  #Entrega diagnóstico, captura pantallas y archivos y los reportes generados
       - name: Guardar resultados y diagnósticos como artefactos
         uses: actions/upload-artifact@v4
         with:

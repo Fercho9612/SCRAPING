@@ -16,18 +16,26 @@ ENV/
 
 # Perfiles locales de Selenium / Navegador (para no subir tus datos de sesión)
 perfil_ml/
-
+perfil_scraper_ml/
 # Configuraciones de editores (IntelliJ y VS Code)
 .idea/
 *.iml
 .vscode/
 
-# Caché de Python
+# Caché de Python Archivos de caché y compilación de Python
 __pycache__/
 *.pyc
+*.py[cod]
+*$py.class
 
 # Archivos locales generados por el scraper (opcional si prefieres que no se versionen)
 *.csv
 *.png
 *.html
 Scraping/.idea
+
+# Archivos de datos generados localmente (opcional, por si no quieres compartir los CSV o capturas de prueba)
+catalogo_mercadolibre.csv
+detalles_sentimientos_mercadolibre.csv
+diagnostico_ml.png
+diagnostico_ml.html
