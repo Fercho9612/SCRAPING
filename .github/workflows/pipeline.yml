@@ -1,4 +1,4 @@
-name: CI Pipeline - Scraping Éxito
+name: CI Pipeline - Scraping Éxito.
 
 on:
   push:
