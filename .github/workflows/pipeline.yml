@@ -2,7 +2,7 @@ name: CI Pipeline - Scraping ML (Ligero)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub cuando quieras
 
 jobs:
