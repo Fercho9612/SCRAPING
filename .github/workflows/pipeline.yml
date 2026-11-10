@@ -35,7 +35,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Ejecutar pruebas automatizadas
-        run: python -m pytest tests -v
+        run: |
+          python -m pytest tests -vv --tb=long --full-trace
+          echo "Código de salida de pytest: $?"
 
       - name: Validar sintaxis y compilación del script
         run: python -m py_compile src/SCRAPING.py
