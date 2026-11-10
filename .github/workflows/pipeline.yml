@@ -1,8 +1,9 @@
+
 name: CI Pipeline - Scraping Éxito.
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "desarrollo" ]
   workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub cuando quieras
 
 jobs:
@@ -31,7 +32,10 @@ jobs:
       - name: Instalar dependencias de Python
         run: |
           python -m pip install --upgrade pip
-          pip install pandas selenium nltk pysentimiento
+          pip install -r requirements.txt
+
+      - name: Ejecutar pruebas automatizadas
+        run: python -m pytest tests -v
 
       - name: Validar sintaxis y compilación del script
         run: python -m py_compile src/SCRAPING.py
@@ -39,8 +43,8 @@ jobs:
       - name: (Opcional) Ejecutar el Scraper de Exito
         run: python src/SCRAPING.py
 
-#Exportan automáticamente como Artifacts en GitHub Actions.
-  #Entrega diagnóstico, captura pantallas y archivos y los reportes generados
+      # Exportan automáticamente como Artifacts en GitHub Actions.
+      # Entrega diagnósticos, capturas de pantalla y archivos generados.
 
       - name: Guardar resultados y diagnósticos como artefactos
         if: always()
@@ -48,6 +52,9 @@ jobs:
         with:
           name: resultados-scraping-py${{ matrix.python-version }}
           path: |
-            *.csv
+            data/*.csv
+            data/*.png
+            data/*.html
             *.png
             *.html
+          if-no-files-found: warn
