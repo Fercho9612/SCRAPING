@@ -1,0 +1,15 @@
+# Imagen de DESPLIEGUE (API web ligera). El Dockerfile original queda intacto para el scraper.
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements-web.txt .
+RUN pip install --no-cache-dir -r requirements-web.txt
+
+COPY src/app.py /app/src/app.py
+COPY data/ /app/data/
+
+# Railway inyecta PORT; 8080 es el valor por defecto local
+ENV PORT=8080
+
+CMD gunicorn --chdir /app/src --bind 0.0.0.0:${PORT} --workers 2 app:app

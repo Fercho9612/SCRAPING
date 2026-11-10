@@ -1,7 +1,12 @@
 .venv/
 perfil_ml/
+perfil_scraper_ml/
 __pycache__/
 *.csv
 *.png
 *.html
 .git/
+
+# Excepción: los CSV de data/ SÍ deben entrar a la imagen (los sirve la API)
+!data/
+!data/*.csv

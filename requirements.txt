@@ -3,3 +3,4 @@ selenium
 nltk
 pysentimiento
 pytest
+flask
