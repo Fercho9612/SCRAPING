@@ -28,13 +28,17 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Archivos locales generados por el scraper (opcional si prefieres que no se versionen)
+# Archivos locales generados por el scraper
 *.csv
 *.png
 *.html
 Scraping/.idea
 
-# Archivos de datos generados localmente (opcional, por si no quieres compartir los CSV o capturas de prueba)
+# Excepción: los CSV de la carpeta data/ SÍ se suben (los necesita el despliegue)
+!data/
+!data/*.csv
+
+# Archivos de datos generados localmente (capturas de prueba antiguas)
 catalogo_mercadolibre.csv
 detalles_sentimientos_mercadolibre.csv
 diagnostico_ml.png
