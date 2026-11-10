@@ -9,6 +9,10 @@ on:
 jobs:
   test-and-run:
     runs-on: ubuntu-latest
+
+    env:
+      ML_VENV_OK: "1"
+
     strategy:
       matrix:
         python-version: ["3.10", "3.11"] # Matriz para probar en ambas versiones
