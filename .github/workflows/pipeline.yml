@@ -1,32 +1,32 @@
-
-name: CI Pipeline - Scraping Éxito.
+name: CI Pipeline - Scraping Exito
 
 on:
   push:
     branches: [ "main", "master", "desarrollo" ]
-  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub cuando quieras
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Permite ejecutarlo manualmente desde GitHub
 
 jobs:
   test-and-run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     env:
       ML_VENV_OK: "1"
 
     strategy:
       matrix:
-        python-version: ["3.10", "3.11"] # Matriz para probar en ambas versiones
+        python-version: ["3.10", "3.11"]
 
     steps:
       - name: Checkout del código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configurar Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-
-      # Instalar el navegador según el valor de la matriz
+          cache: pip
 
       - name: Instalar Google Chrome
         run: |
@@ -38,23 +38,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Ejecutar pruebas automatizadas
+      - name: Ejecutar pruebas automatizadas (scraper y API)
+        run: python -m pytest tests -vv --tb=short
+
+      - name: Validar sintaxis y compilación de los scripts
         run: |
-          python -m pytest tests -vv --tb=long --full-trace
-          echo "Código de salida de pytest: $?"
+          python -m py_compile src/SCRAPING.py
+          python -m py_compile src/app.py
 
-      - name: Validar sintaxis y compilación del script
-        run: python -m py_compile src/SCRAPING.py
-
-      - name: (Opcional) Ejecutar el Scraper de Exito
+      # El scraper solo corre manualmente: Cloudflare puede bloquearlo en GitHub Actions
+      - name: Ejecutar scraper (manual y opcional)
+        if: github.event_name == 'workflow_dispatch' && matrix.python-version == '3.11'
+        continue-on-error: true
         run: python src/SCRAPING.py
-
-      # Exportan automáticamente como Artifacts en GitHub Actions.
-      # Entrega diagnósticos, capturas de pantalla y archivos generados.
 
       - name: Guardar resultados y diagnósticos como artefactos
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: resultados-scraping-py${{ matrix.python-version }}
           path: |

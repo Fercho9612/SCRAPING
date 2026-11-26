@@ -21,7 +21,15 @@ app.json.ensure_ascii = False  # respeta tildes y ñ en el JSON
 
 
 def _leer(ruta):
-    return pd.read_csv(ruta, encoding="utf-8-sig") if ruta.exists() else None
+    """Lee un CSV probando varias codificaciones; ignora filas mal formadas."""
+    if not ruta.exists():
+        return None
+    for enc in ("utf-8-sig", "utf-8", "latin-1"):
+        try:
+            return pd.read_csv(ruta, encoding=enc, on_bad_lines="skip")
+        except UnicodeDecodeError:
+            continue
+    return None
 
 
 @app.route("/")
@@ -44,23 +52,29 @@ def health():
 
 @app.route("/resumen")
 def resumen():
-    cat = _leer(CATALOGO)
-    if cat is None:
-        return jsonify({"error": "catalogo_exito.csv aún no está disponible"}), 404
+    try:
+        cat = _leer(CATALOGO)
+        if cat is None:
+            return jsonify({"error": "catalogo_exito.csv no disponible o ilegible"}), 404
 
-    salida = {"total_productos": int(len(cat))}
-    precios = cat["precio_num"].dropna() if "precio_num" in cat.columns else []
-    if len(precios) > 0:
-        salida["precio_min"] = int(precios.min())
-        salida["precio_max"] = int(precios.max())
-        salida["precio_promedio"] = int(round(precios.mean()))
+        salida = {"total_productos": int(len(cat))}
 
-    det = _leer(DETALLES)
-    if det is not None and "sentimiento" in det.columns:
-        conteo = det["sentimiento"].value_counts()
-        salida["sentimientos"] = {str(k): int(v) for k, v in conteo.items()}
-        salida["productos_analizados"] = int(len(det))
-    return jsonify(salida)
+        if "precio_num" in cat.columns:
+            precios = pd.to_numeric(cat["precio_num"], errors="coerce").dropna()
+            if len(precios) > 0:
+                salida["precio_min"] = int(precios.min())
+                salida["precio_max"] = int(precios.max())
+                salida["precio_promedio"] = int(round(precios.mean()))
+
+        det = _leer(DETALLES)
+        if det is not None and "sentimiento" in det.columns:
+            conteo = det["sentimiento"].dropna().value_counts()
+            salida["sentimientos"] = {str(k): int(v) for k, v in conteo.items()}
+            salida["productos_analizados"] = int(len(det))
+        return jsonify(salida)
+    except Exception as e:
+        app.logger.exception("Fallo en /resumen")
+        return jsonify({"error": "no se pudo generar el resumen", "detalle": str(e)}), 500
 
 
 @app.route("/catalogo.csv")

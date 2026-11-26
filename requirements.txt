@@ -1,6 +1,6 @@
-pandas
+pandas>=2.0,<3
 selenium
 nltk
 pysentimiento
 pytest
-flask
+flask>=3.0,<4
